@@ -19,7 +19,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/prometheus/common/model"
+	"github.com/prometheus/client_golang/prometheus/internal"
 )
 
 // Labels represents a collection of label name -> value mappings. This type is
@@ -184,6 +184,5 @@ func validateLabelValues(vals []string, expectedNumberOfValues int) error {
 }
 
 func checkLabelName(l string) bool {
-	//nolint:staticcheck // TODO: Don't use deprecated model.NameValidationScheme.
-	return model.NameValidationScheme.IsValidLabelName(l) && !strings.HasPrefix(l, reservedLabelPrefix)
+	return internal.IsValidLabelName(l) && !strings.HasPrefix(l, reservedLabelPrefix)
 }

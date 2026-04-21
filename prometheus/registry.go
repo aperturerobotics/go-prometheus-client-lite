@@ -17,8 +17,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 	"runtime"
 	"sort"
 	"strconv"
@@ -30,7 +28,6 @@ import (
 
 	"github.com/cespare/xxhash/v2"
 	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -42,25 +39,13 @@ const (
 
 // DefaultRegisterer and DefaultGatherer are the implementations of the
 // Registerer and Gatherer interface a number of convenience functions in this
-// package act on. Initially, both variables point to the same Registry, which
-// has a process collector (currently on Linux only, see NewProcessCollector)
-// and a Go collector (see NewGoCollector, in particular the note about
-// stop-the-world implication with Go versions older than 1.9) already
-// registered. This approach to keep default instances as global state mirrors
-// the approach of other packages in the Go standard library. Note that there
-// are caveats. Change the variables with caution and only if you understand the
-// consequences. Users who want to avoid global state altogether should not use
-// the convenience functions and act on custom instances instead.
+// package act on. Both initially point to the same empty Registry. Users who
+// want runtime or build metadata collectors should register them explicitly.
 var (
 	defaultRegistry              = NewRegistry()
 	DefaultRegisterer Registerer = defaultRegistry
 	DefaultGatherer   Gatherer   = defaultRegistry
 )
-
-func init() {
-	MustRegister(NewProcessCollector(ProcessCollectorOpts{}))
-	MustRegister(NewGoCollector())
-}
 
 // NewRegistry creates a new vanilla Registry without any Collectors
 // pre-registered.
@@ -624,38 +609,6 @@ func (r *Registry) Collect(ch chan<- Metric) {
 	for _, c := range r.uncheckedCollectors {
 		c.Collect(ch)
 	}
-}
-
-// WriteToTextfile calls Gather on the provided Gatherer, encodes the result in the
-// Prometheus text format, and writes it to a temporary file. Upon success, the
-// temporary file is renamed to the provided filename.
-//
-// This is intended for use with the textfile collector of the node exporter.
-// Note that the node exporter expects the filename to be suffixed with ".prom".
-func WriteToTextfile(filename string, g Gatherer) error {
-	tmp, err := os.CreateTemp(filepath.Dir(filename), filepath.Base(filename))
-	if err != nil {
-		return err
-	}
-	defer os.Remove(tmp.Name())
-
-	mfs, err := g.Gather()
-	if err != nil {
-		return err
-	}
-	for _, mf := range mfs {
-		if _, err := expfmt.MetricFamilyToText(tmp, mf); err != nil {
-			return err
-		}
-	}
-	if err := tmp.Close(); err != nil {
-		return err
-	}
-
-	if err := os.Chmod(tmp.Name(), 0o644); err != nil {
-		return err
-	}
-	return os.Rename(tmp.Name(), filename)
 }
 
 // processMetric is an internal helper method only used by the Gather method.

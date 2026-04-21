@@ -20,12 +20,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/internal"
+
 	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/model"
 	"google.golang.org/protobuf/proto"
 )
 
-var separatorByteSlice = []byte{model.SeparatorByte} // For convenient use with xxhash.
+var separatorByteSlice = []byte{internal.SeparatorByte} // For convenient use with xxhash.
 
 // A Metric models a single sample value with its meta data being exported to
 // Prometheus. Implementations of Metric in this package are Gauge, Counter,

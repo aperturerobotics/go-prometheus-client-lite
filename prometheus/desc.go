@@ -18,12 +18,11 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/prometheus/client_golang/prometheus/internal"
+
 	"github.com/cespare/xxhash/v2"
 	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/model"
 	"google.golang.org/protobuf/proto"
-
-	"github.com/prometheus/client_golang/prometheus/internal"
 )
 
 // Desc is the descriptor used by every Prometheus Metric. It is essentially
@@ -111,8 +110,7 @@ func (v2) NewDesc(fqName, help string, variableLabels ConstrainableLabels, const
 	for _, opt := range opts {
 		opt(d)
 	}
-	//nolint:staticcheck // TODO: Don't use deprecated model.NameValidationScheme.
-	if !model.NameValidationScheme.IsValidMetricName(fqName) {
+	if !internal.IsValidMetricName(fqName) {
 		d.err = fmt.Errorf("%q is not a valid metric name", fqName)
 		return d
 	}

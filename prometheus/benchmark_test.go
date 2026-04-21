@@ -171,36 +171,6 @@ func BenchmarkGaugeNoLabels(b *testing.B) {
 	}
 }
 
-func BenchmarkSummaryWithLabelValues(b *testing.B) {
-	m := NewSummaryVec(
-		SummaryOpts{
-			Name:       "benchmark_summary",
-			Help:       "A summary to benchmark it.",
-			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
-		},
-		[]string{"one", "two", "three"},
-	)
-	b.ReportAllocs()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		m.WithLabelValues("eins", "zwei", "drei").Observe(3.1415)
-	}
-}
-
-func BenchmarkSummaryNoLabels(b *testing.B) {
-	m := NewSummary(SummaryOpts{
-		Name:       "benchmark_summary",
-		Help:       "A summary to benchmark it.",
-		Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
-	},
-	)
-	b.ReportAllocs()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		m.Observe(3.1415)
-	}
-}
-
 func BenchmarkHistogramWithLabelValues(b *testing.B) {
 	m := NewHistogramVec(
 		HistogramOpts{

@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/prometheus/common/model"
+	"github.com/prometheus/client_golang/prometheus/internal"
 )
 
 // MetricVec is a Collector to bundle metrics of the same name that differ in
@@ -267,7 +267,7 @@ func (m *MetricVec) hashLabelValues(vals []string) (uint64, error) {
 			h = m.hashAdd(h, vals[iVals])
 			iVals++
 		}
-		h = m.hashAddByte(h, model.SeparatorByte)
+		h = m.hashAddByte(h, internal.SeparatorByte)
 	}
 	return h, nil
 }
@@ -296,7 +296,7 @@ func (m *MetricVec) hashLabels(labels Labels) (uint64, error) {
 			}
 			h = m.hashAdd(h, val)
 		}
-		h = m.hashAddByte(h, model.SeparatorByte)
+		h = m.hashAddByte(h, internal.SeparatorByte)
 	}
 	return h, nil
 }

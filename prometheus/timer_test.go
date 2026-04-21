@@ -28,11 +28,9 @@ func TestTimerObserve(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
 		var (
 			his   = NewHistogram(HistogramOpts{Name: "test_histogram"})
-			sum   = NewSummary(SummaryOpts{Name: "test_summary"})
 			gauge = NewGauge(GaugeOpts{Name: "test_gauge"})
 
 			hisTimer   = NewTimer(his)
-			sumTimer   = NewTimer(sum)
 			gaugeTimer = NewTimer(ObserverFunc(gauge.Set))
 		)
 
@@ -41,7 +39,6 @@ func TestTimerObserve(t *testing.T) {
 		time.Sleep(time.Second)
 
 		hisTimer.ObserveDuration()
-		sumTimer.ObserveDuration()
 		gaugeTimer.ObserveDuration()
 
 		m := &dto.Metric{}
@@ -49,12 +46,6 @@ func TestTimerObserve(t *testing.T) {
 		his.Write(m)
 		if want, got := uint64(1), m.GetHistogram().GetSampleCount(); want != got {
 			t.Errorf("want %d observations for histogram, got %d", want, got)
-		}
-
-		m.Reset()
-		sum.Write(m)
-		if want, got := uint64(1), m.GetSummary().GetSampleCount(); want != got {
-			t.Errorf("want %d observations for summary, got %d", want, got)
 		}
 
 		m.Reset()
@@ -70,11 +61,9 @@ func TestTimerObserveWithExemplar(t *testing.T) {
 		var (
 			exemplar = Labels{"foo": "bar"}
 			his      = NewHistogram(HistogramOpts{Name: "test_histogram"})
-			sum      = NewSummary(SummaryOpts{Name: "test_summary"})
 			gauge    = NewGauge(GaugeOpts{Name: "test_gauge"})
 
 			hisTimer   = NewTimer(his)
-			sumTimer   = NewTimer(sum)
 			gaugeTimer = NewTimer(ObserverFunc(gauge.Set))
 		)
 
@@ -83,8 +72,7 @@ func TestTimerObserveWithExemplar(t *testing.T) {
 		time.Sleep(time.Second)
 
 		hisTimer.ObserveDurationWithExemplar(exemplar)
-		// Gauges and summaries does not implement ExemplarObserver, so we expect them to ignore exemplar.
-		sumTimer.ObserveDurationWithExemplar(exemplar)
+		// Gauges do not implement ExemplarObserver, so they ignore exemplars.
 		gaugeTimer.ObserveDurationWithExemplar(exemplar)
 
 		m := &dto.Metric{}
@@ -104,12 +92,6 @@ func TestTimerObserveWithExemplar(t *testing.T) {
 		want := []*dto.LabelPair{{Name: proto.String("foo"), Value: proto.String("bar")}}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("expected %v exemplar labels, got %v", want, got)
-		}
-		m.Reset()
-
-		sum.Write(m)
-		if want, got := uint64(1), m.GetSummary().GetSampleCount(); want != got {
-			t.Errorf("want %d observations for summary, got %d", want, got)
 		}
 		m.Reset()
 

@@ -17,8 +17,9 @@ import (
 	"testing"
 	"time"
 
-	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
+
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 func TestNewConstMetricInvalidLabelValues(t *testing.T) {

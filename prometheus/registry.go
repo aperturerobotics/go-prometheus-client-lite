@@ -27,9 +27,10 @@ import (
 
 	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 
+	"github.com/cespare/xxhash/v2"
+
 	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
-	"github.com/cespare/xxhash/v2"
 )
 
 const (

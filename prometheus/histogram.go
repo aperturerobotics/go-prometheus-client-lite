@@ -25,8 +25,9 @@ import (
 
 	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 
-	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
+
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 )
 
 const (

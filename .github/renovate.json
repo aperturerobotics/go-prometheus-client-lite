@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    ":semanticPrefixFixDepsChoreOthers",
+    ":ignoreModulesAndTests",
+    "group:all",
+    "workarounds:all",
+    ":gitSignOff"
+  ],
+  "forkProcessing": "enabled",
+  "branchConcurrentLimit": 0,
+  "ignorePaths": ["hack"],
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "matchDepTypes": [
+        "replace",
+        "toolchain"
+      ],
+      "enabled": false
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["golang"],
+      "enabled": false
+    }
+  ]
+}

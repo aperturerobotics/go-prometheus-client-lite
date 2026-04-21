@@ -5,8 +5,9 @@
 package io_prometheus_client
 
 import (
-	timestamppb "github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
 	strconv "strconv"
+
+	timestamppb "github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
 )
 
 // Copyright 2013 Prometheus Team

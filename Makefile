@@ -1,92 +1,42 @@
-# Copyright 2018 The Prometheus Authors
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+SHELL:=bash
 
-include Makefile.common
+PROTOC ?= protoc
+PROTOC_GEN_GO_LITE ?= $(HOME)/company/bin/protoc-gen-go-lite
 
-BUF := $(FIRST_GOPATH)/bin/buf
-BUF_VERSION ?= v1.39.0
+all:
 
-$(BUF):
-	go install github.com/bufbuild/buf/cmd/buf@$(BUF_VERSION)
+.PHONY: build
+build:
+	go build ./...
 
-.PHONY: deps
-deps:
-	$(MAKE) common-deps
-	cd exp && $(GO) mod tidy && $(GO) mod download
+.PHONY: vendor
+vendor:
+	go mod vendor
 
 .PHONY: test
-test: deps common-test test-exp
+test:
+	go test ./...
 
-.PHONY: test-short
-test-short: deps common-test-short test-exp-short
+.PHONY: lint
+lint:
+	GOFLAGS=-mod=mod go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint run --timeout=10m
 
-.PHONY: update-go-version
-update-go-version:
-	@bash update-go-version.bash
-	$(MAKE) generate-go-collector-test-files
+.PHONY: fix
+fix:
+	GOFLAGS=-mod=mod go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint run --fix --timeout=10m
 
-.PHONY: generate-go-collector-test-files
-file := supported_go_versions.json
-VERSIONS := $(shell grep -o '"version": "[^"]*"' $(file) | sed 's/"version": "\(.*\)"/\1/')
-generate-go-collector-test-files:
-	for GO_VERSION in $(VERSIONS); do \
-		docker run \
-			--platform linux/amd64 \
-			--rm -v $(PWD):/workspace \
-			-w /workspace \
-			golang:$$GO_VERSION \
-			bash ./generate-go-collector.bash; \
-	done; \
-	go mod tidy
+.PHONY: format
+format:
+	gofmt -w ./
 
-.PHONY: fmt
-fmt: common-format
-
-.PHONY: proto
-proto: ## Regenerate Go from remote write proto.
-proto: $(BUF)
-	@echo ">> regenerating Prometheus Remote Write proto"
-	@cd exp/api/remote/genproto && $(BUF) generate
-	@cd exp/api/remote && find genproto/ -type f -exec sed -i '' 's/protohelpers "github.com\/planetscale\/vtprotobuf\/protohelpers"/protohelpers "github.com\/prometheus\/client_golang\/exp\/internal\/github.com\/planetscale\/vtprotobuf\/protohelpers"/g' {} \;
-	# For some reasons buf generates this unused import, kill it manually for now and reformat.
-	@cd exp/api/remote && find genproto/ -type f -exec sed -i '' 's/_ "github.com\/gogo\/protobuf\/gogoproto"//g' {} \;
-	@cd exp/api/remote && go fmt ./genproto/...
-	$(MAKE) fmt
-
-.PHONY: test-exp
-test-exp:
-	cd exp && $(GOTEST) $(test-flags) $(GOOPTS) $(pkgs)
-
-.PHONY: test-exp-short
-test-exp-short:
-	cd exp && $(GOTEST) -short $(GOOPTS) $(pkgs)
-
-.PHONY: check-crlf
-check-crlf:
-	@echo ">> checking for CRLF line endings"
-	@files=$$(find . -type f -not -path "*/\.*" -not -path "*/vendor/*" -exec file {} \; | grep CRLF | cut -d: -f1); \
-	if [ -n "$$files" ]; then \
-		echo "Files with CRLF line endings found:"; \
-		echo "$$files"; \
-		echo "Run 'make fix-crlf' to fix them"; \
-		exit 1; \
-	fi
-
-.PHONY: fix-crlf
-fix-crlf:
-	@echo ">> fixing CRLF line endings"
-	@files=$$(find . -type f -not -path "*/\.*" -not -path "*/vendor/*" -exec file {} \; | grep CRLF | cut -d: -f1); \
-	for file in $$files; do \
-		tr -d '\r' < "$$file" > "$$file.tmp" && mv "$$file.tmp" "$$file"; \
-	done
-	@echo ">> CRLF line endings fixed"
+.PHONY: gengo
+gengo:
+	PATH="$$(dirname $(PROTOC_GEN_GO_LITE)):$$PATH" \
+	$(PROTOC) \
+		--plugin=protoc-gen-go-lite="$(PROTOC_GEN_GO_LITE)" \
+		--go-lite_out=. \
+		--go-lite_opt=paths=source_relative \
+		--go-lite_opt=features=equal \
+		--go-lite_opt=Mgoogle/protobuf/timestamp.proto=github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb \
+		client_model/go/metrics.proto
+	gofmt -w client_model/go/metrics.pb.go

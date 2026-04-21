@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"maps"
 	"runtime"
 	"sort"
 	"strconv"
@@ -24,11 +25,11 @@ import (
 	"sync"
 	"unicode/utf8"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 	"github.com/cespare/xxhash/v2"
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -354,9 +355,7 @@ func (r *Registry) Register(c Collector) error {
 	for hash := range newDescIDs {
 		r.descIDs[hash] = struct{}{}
 	}
-	for name, dimHash := range newDimHashesByName {
-		r.dimHashesByName[name] = dimHash
-	}
+	maps.Copy(r.dimHashesByName, newDimHashesByName)
 	return nil
 }
 
@@ -632,7 +631,7 @@ func processMetric(
 	if ok { // Existing name.
 		if metricFamily.GetHelp() != desc.help {
 			return fmt.Errorf(
-				"collected metric %s %s has help %q but should have %q",
+				"collected metric %s %v has help %q but should have %q",
 				desc.fqName, dtoMetric, desc.help, metricFamily.GetHelp(),
 			)
 		}
@@ -641,35 +640,35 @@ func processMetric(
 		case dto.MetricType_COUNTER:
 			if dtoMetric.Counter == nil {
 				return fmt.Errorf(
-					"collected metric %s %s should be a Counter",
+					"collected metric %s %v should be a Counter",
 					desc.fqName, dtoMetric,
 				)
 			}
 		case dto.MetricType_GAUGE:
 			if dtoMetric.Gauge == nil {
 				return fmt.Errorf(
-					"collected metric %s %s should be a Gauge",
+					"collected metric %s %v should be a Gauge",
 					desc.fqName, dtoMetric,
 				)
 			}
 		case dto.MetricType_SUMMARY:
 			if dtoMetric.Summary == nil {
 				return fmt.Errorf(
-					"collected metric %s %s should be a Summary",
+					"collected metric %s %v should be a Summary",
 					desc.fqName, dtoMetric,
 				)
 			}
 		case dto.MetricType_UNTYPED:
 			if dtoMetric.Untyped == nil {
 				return fmt.Errorf(
-					"collected metric %s %s should be Untyped",
+					"collected metric %s %v should be Untyped",
 					desc.fqName, dtoMetric,
 				)
 			}
 		case dto.MetricType_HISTOGRAM:
 			if dtoMetric.Histogram == nil {
 				return fmt.Errorf(
-					"collected metric %s %s should be a Histogram",
+					"collected metric %s %v should be a Histogram",
 					desc.fqName, dtoMetric,
 				)
 			}
@@ -696,7 +695,7 @@ func processMetric(
 		case dtoMetric.Histogram != nil:
 			metricFamily.Type = dto.MetricType_HISTOGRAM.Enum()
 		default:
-			return fmt.Errorf("empty metric collected: %s", dtoMetric)
+			return fmt.Errorf("empty metric collected: %v", dtoMetric)
 		}
 		if err := checkSuffixCollisions(metricFamily, metricFamiliesByName); err != nil {
 			return err
@@ -710,7 +709,7 @@ func processMetric(
 		// Is the desc registered at all?
 		if _, exist := registeredDescIDs[desc.id]; !exist {
 			return fmt.Errorf(
-				"collected metric %s %s with unregistered descriptor %s",
+				"collected metric %s %v with unregistered descriptor %s",
 				metricFamily.GetName(), dtoMetric, desc,
 			)
 		}
@@ -878,7 +877,7 @@ func checkMetricConsistency(
 		metricFamily.GetType() == dto.MetricType_HISTOGRAM && dtoMetric.Histogram == nil ||
 		metricFamily.GetType() == dto.MetricType_UNTYPED && dtoMetric.Untyped == nil {
 		return fmt.Errorf(
-			"collected metric %q { %s} is not a %s",
+			"collected metric %q { %v} is not a %s",
 			name, dtoMetric, metricFamily.GetType(),
 		)
 	}
@@ -888,25 +887,25 @@ func checkMetricConsistency(
 		labelName := labelPair.GetName()
 		if labelName == previousLabelName {
 			return fmt.Errorf(
-				"collected metric %q { %s} has two or more labels with the same name: %s",
+				"collected metric %q { %v} has two or more labels with the same name: %s",
 				name, dtoMetric, labelName,
 			)
 		}
 		if !checkLabelName(labelName) {
 			return fmt.Errorf(
-				"collected metric %q { %s} has a label with an invalid name: %s",
+				"collected metric %q { %v} has a label with an invalid name: %s",
 				name, dtoMetric, labelName,
 			)
 		}
 		if dtoMetric.Summary != nil && labelName == quantileLabel {
 			return fmt.Errorf(
-				"collected metric %q { %s} must not have an explicit %q label",
+				"collected metric %q { %v} must not have an explicit %q label",
 				name, dtoMetric, quantileLabel,
 			)
 		}
 		if !utf8.ValidString(labelPair.GetValue()) {
 			return fmt.Errorf(
-				"collected metric %q { %s} has a label named %q whose value is not utf8: %#v",
+				"collected metric %q { %v} has a label named %q whose value is not utf8: %#v",
 				name, dtoMetric, labelName, labelPair.GetValue())
 		}
 		previousLabelName = labelName
@@ -938,7 +937,7 @@ func checkMetricConsistency(
 	hSum := h.Sum64()
 	if _, exists := metricHashes[hSum]; exists {
 		return fmt.Errorf(
-			"collected metric %q { %s} was collected before with the same name and label values",
+			"collected metric %q { %v} was collected before with the same name and label values",
 			name, dtoMetric,
 		)
 	}
@@ -954,7 +953,7 @@ func checkDescConsistency(
 	// Desc help consistency with metric family help.
 	if metricFamily.GetHelp() != desc.help {
 		return fmt.Errorf(
-			"collected metric %s %s has help %q but should have %q",
+			"collected metric %s %v has help %q but should have %q",
 			metricFamily.GetName(), dtoMetric, metricFamily.GetHelp(), desc.help,
 		)
 	}
@@ -969,7 +968,7 @@ func checkDescConsistency(
 	}
 	if len(lpsFromDesc) != len(dtoMetric.Label) {
 		return fmt.Errorf(
-			"labels in collected metric %s %s are inconsistent with descriptor %s",
+			"labels in collected metric %s %v are inconsistent with descriptor %s",
 			metricFamily.GetName(), dtoMetric, desc,
 		)
 	}
@@ -979,7 +978,7 @@ func checkDescConsistency(
 		if lpFromDesc.GetName() != lpFromMetric.GetName() ||
 			lpFromDesc.Value != nil && lpFromDesc.GetValue() != lpFromMetric.GetValue() {
 			return fmt.Errorf(
-				"labels in collected metric %s %s are inconsistent with descriptor %s",
+				"labels in collected metric %s %v are inconsistent with descriptor %s",
 				metricFamily.GetName(), dtoMetric, desc,
 			)
 		}

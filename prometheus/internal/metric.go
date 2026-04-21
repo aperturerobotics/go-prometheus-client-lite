@@ -16,7 +16,7 @@ package internal
 import (
 	"sort"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 // LabelPairSorter implements sort.Interface. It is used to sort a slice of

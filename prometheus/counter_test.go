@@ -19,9 +19,9 @@ import (
 	"testing"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
+	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
 )
 
 func TestCounterAdd(t *testing.T) {
@@ -74,7 +74,7 @@ func TestCounterAdd(t *testing.T) {
 		},
 	}
 	if !proto.Equal(expected, m) {
-		t.Errorf("expected %q, got %q", expected, m)
+		t.Errorf("expected %v, got %v", expected, m)
 	}
 }
 
@@ -187,7 +187,7 @@ func TestCounterAddInf(t *testing.T) {
 	}
 
 	if !proto.Equal(expected, m) {
-		t.Errorf("expected %q, got %q", expected, m)
+		t.Errorf("expected %v, got %v", expected, m)
 	}
 }
 
@@ -221,7 +221,7 @@ func TestCounterAddLarge(t *testing.T) {
 	}
 
 	if !proto.Equal(expected, m) {
-		t.Errorf("expected %q, got %q", expected, m)
+		t.Errorf("expected %v, got %v", expected, m)
 	}
 }
 
@@ -254,7 +254,7 @@ func TestCounterAddSmall(t *testing.T) {
 	}
 
 	if !proto.Equal(expected, m) {
-		t.Errorf("expected %q, got %q", expected, m)
+		t.Errorf("expected %v, got %v", expected, m)
 	}
 }
 
@@ -280,8 +280,8 @@ func TestCounterExemplar(t *testing.T) {
 	}
 
 	counter.AddWithExemplar(42, Labels{"foo": "bar"})
-	if expected, got := expectedExemplar.String(), counter.exemplar.Load().(*dto.Exemplar).String(); expected != got {
-		t.Errorf("expected exemplar %s, got %s.", expected, got)
+	if got := counter.exemplar.Load().(*dto.Exemplar); !proto.Equal(expectedExemplar, got) {
+		t.Errorf("expected exemplar %v, got %v.", expectedExemplar, got)
 	}
 
 	addExemplarWithInvalidLabel := func() (err error) {

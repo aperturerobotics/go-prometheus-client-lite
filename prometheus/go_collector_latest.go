@@ -12,7 +12,6 @@
 // limitations under the License.
 
 //go:build go1.17
-// +build go1.17
 
 package prometheus
 
@@ -24,10 +23,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 )
 
 const (
@@ -461,7 +460,7 @@ func memStatsFromRM(ms *runtime.MemStats, rm map[string]*metrics.Sample) {
 	// N.B. GCCPUFraction is intentionally omitted. This metric is not useful,
 	// and often misleading due to the fact that it's an average over the lifetime
 	// of the process.
-	// See https://github.com/prometheus/client_golang/issues/842#issuecomment-861812034
+	// See https://github.com/aperturerobotics/go-prometheus-client-lite/issues/842#issuecomment-861812034
 	// for more details.
 	ms.GCCPUFraction = 0
 }

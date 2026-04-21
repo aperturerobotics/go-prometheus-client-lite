@@ -19,8 +19,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
 )
 
 // Counter is a Metric that represents a single numerical value that only ever

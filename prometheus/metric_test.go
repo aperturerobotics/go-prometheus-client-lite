@@ -20,10 +20,10 @@ import (
 	"testing"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
+	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
 )
 
 func TestBuildFQName(t *testing.T) {
@@ -283,7 +283,7 @@ func TestWithExemplarsNativeHistogramMetric(t *testing.T) {
 			}
 
 			if !proto.Equal(tc.Want, got) {
-				t.Errorf("want histogram %q, got %q", tc.Want, got)
+				t.Errorf("want histogram %v, got %v", tc.Want, got)
 			}
 
 		}

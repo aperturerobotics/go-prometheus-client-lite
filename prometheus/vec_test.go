@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"testing"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 func TestDelete(t *testing.T) {
@@ -291,7 +291,7 @@ func testMetricVec(t *testing.T, vec *GaugeVec) {
 	// Keep track of metrics.
 	expected := map[[2]string]int{}
 
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		pair[0], pair[1] = strconv.Itoa(i%4), strconv.Itoa(i%5) // Varying combinations multiples.
 		expected[pair]++
 		vec.WithLabelValues(pair[0], pair[1]).Inc()
@@ -363,7 +363,7 @@ func testConstrainedMetricVec(t *testing.T, vec *GaugeVec, constrain func(string
 	// Keep track of metrics.
 	expected := map[[2]string]int{}
 
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		pair[0], pair[1] = strconv.Itoa(i%4), strconv.Itoa(i%5) // Varying combinations multiples.
 		expected[[2]string{pair[0], constrain(pair[1])}]++
 		vec.WithLabelValues(pair[0], pair[1]).Inc()
@@ -942,12 +942,12 @@ func BenchmarkMetricVecWithLabelValues10Keys1000ValueCardinality(b *testing.B) {
 func benchmarkMetricVecWithLabelValuesCardinality(b *testing.B, nkeys, nvalues int) {
 	labels := map[string][]string{}
 
-	for i := 0; i < nkeys; i++ {
+	for i := range nkeys {
 		var (
 			k  = fmt.Sprintf("key-%v", i)
 			vs = make([]string, 0, nvalues)
 		)
-		for j := 0; j < nvalues; j++ {
+		for j := range nvalues {
 			vs = append(vs, fmt.Sprintf("value-%v", j))
 		}
 		labels[k] = vs

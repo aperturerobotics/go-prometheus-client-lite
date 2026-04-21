@@ -18,7 +18,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 // Gauge is a Metric that represents a single numerical value that can

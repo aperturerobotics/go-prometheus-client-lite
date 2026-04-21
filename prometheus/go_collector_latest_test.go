@@ -12,7 +12,6 @@
 // limitations under the License.
 
 //go:build go1.17
-// +build go1.17
 
 package prometheus
 
@@ -26,9 +25,9 @@ import (
 	"sync"
 	"testing"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 )
 
 func TestRmForMemStats(t *testing.T) {
@@ -147,7 +146,7 @@ func TestGoCollector_ExposedMetrics(t *testing.T) {
 	}
 }
 
-var sink interface{}
+var sink any
 
 func TestBatchHistogram(t *testing.T) {
 	goMetrics := collectGoMetrics(t, internal.GoCollectorOptions{

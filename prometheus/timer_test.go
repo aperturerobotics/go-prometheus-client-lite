@@ -19,9 +19,9 @@ import (
 	"testing/synctest"
 	"time"
 
-	"google.golang.org/protobuf/proto"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 func TestTimerObserve(t *testing.T) {

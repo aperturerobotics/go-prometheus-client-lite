@@ -22,7 +22,7 @@ type GoCollectorRule struct {
 
 // GoCollectorOptions should not be used be directly by anything, except `collectors` package.
 // Use it via collectors package instead. See issue
-// https://github.com/prometheus/client_golang/issues/1030.
+// https://github.com/aperturerobotics/go-prometheus-client-lite/issues/1030.
 //
 // This is internal, so external users only can use it via `collector.WithGoCollector*` methods
 type GoCollectorOptions struct {

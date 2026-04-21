@@ -19,8 +19,8 @@ import (
 	"testing"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 )
 
 // uncheckedCollector wraps a Collector but its Describe method yields no Desc.
@@ -322,10 +322,10 @@ func assertEqualMFs(t *testing.T, wantMF, gotMF []*dto.MetricFamily) {
 			var want, got []string
 
 			for i, mf := range wantMF {
-				want = append(want, fmt.Sprintf("%3d: %s", i, mf))
+				want = append(want, fmt.Sprintf("%3d: %v", i, mf))
 			}
 			for i, mf := range gotMF {
-				got = append(got, fmt.Sprintf("%3d: %s", i, mf))
+				got = append(got, fmt.Sprintf("%3d: %v", i, mf))
 			}
 
 			t.Fatalf(

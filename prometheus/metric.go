@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
 )
 
 var separatorByteSlice = []byte{internal.SeparatorByte} // For convenient use with xxhash.
@@ -208,7 +208,7 @@ func (m *withExemplarsMetric) Write(pb *dto.Metric) error {
 			if i < len(h.Bucket) {
 				h.Bucket[i].Exemplar = e
 			} else {
-				// The +Inf bucket should be explicitly added if there is an exemplar for it, similar to non-const histogram logic in https://github.com/prometheus/client_golang/blob/main/prometheus/histogram.go#L357-L365.
+				// The +Inf bucket should be explicitly added if there is an exemplar for it, similar to non-const histogram logic in https://github.com/aperturerobotics/go-prometheus-client-lite/blob/main/prometheus/histogram.go#L357-L365.
 				b := &dto.Bucket{
 					CumulativeCount: proto.Uint64(h.GetSampleCount()),
 					UpperBound:      proto.Float64(math.Inf(1)),

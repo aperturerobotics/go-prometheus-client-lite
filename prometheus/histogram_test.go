@@ -25,12 +25,27 @@ import (
 	"testing/quick"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
+	"github.com/aperturerobotics/go-prometheus-client-lite/proto"
+	"github.com/aperturerobotics/protobuf-go-lite/types/known/timestamppb"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 )
+
+var histogramCmpOpts = cmp.Options{
+	cmpopts.EquateEmpty(),
+	cmpopts.EquateNaNs(),
+	cmpopts.IgnoreUnexported(
+		dto.Histogram{},
+		dto.Bucket{},
+		dto.BucketSpan{},
+		dto.Exemplar{},
+		dto.LabelPair{},
+		timestamppb.Timestamp{},
+	),
+}
 
 func benchmarkHistogramObserve(w int, b *testing.B) {
 	b.StopTimer()
@@ -43,7 +58,7 @@ func benchmarkHistogramObserve(w int, b *testing.B) {
 
 	s := NewHistogram(HistogramOpts{})
 
-	for i := 0; i < w; i++ {
+	for range w {
 		go func() {
 			g.Wait()
 
@@ -87,11 +102,11 @@ func benchmarkHistogramWrite(w int, b *testing.B) {
 
 	s := NewHistogram(HistogramOpts{})
 
-	for i := 0; i < 1000000; i++ {
+	for i := range 1000000 {
 		s.Observe(float64(i))
 	}
 
-	for j := 0; j < w; j++ {
+	for range w {
 		outs := make([]dto.Metric, b.N)
 
 		go func(o []dto.Metric) {
@@ -176,9 +191,9 @@ func TestHistogramConcurrency(t *testing.T) {
 
 		allVars := make([]float64, total)
 		var sampleSum float64
-		for i := 0; i < concLevel; i++ {
+		for i := range concLevel {
 			vals := make([]float64, mutations)
-			for j := 0; j < mutations; j++ {
+			for j := range mutations {
 				v := rand.NormFloat64()
 				vals[j] = v
 				allVars[i*mutations+j] = v
@@ -265,10 +280,10 @@ func TestHistogramVecConcurrency(t *testing.T) {
 
 		allVars := make([][]float64, vecLength)
 		sampleSums := make([]float64, vecLength)
-		for i := 0; i < concLevel; i++ {
+		for range concLevel {
 			vals := make([]float64, mutations)
 			picks := make([]int, mutations)
-			for j := 0; j < mutations; j++ {
+			for j := range mutations {
 				v := rand.NormFloat64()
 				vals[j] = v
 				pick := rand.Intn(vecLength)
@@ -291,7 +306,7 @@ func TestHistogramVecConcurrency(t *testing.T) {
 		start.Done()
 		end.Wait()
 
-		for i := 0; i < vecLength; i++ {
+		for i := range vecLength {
 			m := &dto.Metric{}
 			s := his.WithLabelValues(string('A' + rune(i)))
 			s.(Histogram).Write(m)
@@ -391,7 +406,7 @@ func TestHistogramAtomicObserve(t *testing.T) {
 	go observe()
 	go observe()
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		m := &dto.Metric{}
 		if err := his.Write(m); err != nil {
 			t.Fatal("unexpected error writing histogram:", err)
@@ -456,15 +471,12 @@ func TestHistogramExemplar(t *testing.T) {
 	histogram.ObserveWithExemplar(4.5, Labels{"id": "4"}) // Should go to +Inf bucket.
 
 	for i, ex := range histogram.exemplars {
-		var got, expected string
+		var got *dto.Exemplar
 		if val := ex.Load(); val != nil {
-			got = val.(*dto.Exemplar).String()
+			got = val.(*dto.Exemplar)
 		}
-		if expectedExemplars[i] != nil {
-			expected = expectedExemplars[i].String()
-		}
-		if got != expected {
-			t.Errorf("expected exemplar %s, got %s.", expected, got)
+		if !proto.Equal(expectedExemplars[i], got) {
+			t.Errorf("expected exemplar %v, got %v.", expectedExemplars[i], got)
 		}
 	}
 }
@@ -999,8 +1011,8 @@ func TestNativeHistogram(t *testing.T) {
 				t.Fatal("unexpected error writing metric", err)
 			}
 			got := m.Histogram
-			if !proto.Equal(s.want, got) {
-				t.Errorf("want histogram %q, got %q", s.want, got)
+			if diff := cmp.Diff(s.want, got, histogramCmpOpts...); diff != "" {
+				t.Errorf("unexpected histogram (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -1039,9 +1051,9 @@ func TestNativeHistogramConcurrency(t *testing.T) {
 
 		allVars := make([]float64, total)
 		var sampleSum float64
-		for i := 0; i < concLevel; i++ {
+		for i := range concLevel {
 			vals := make([]float64, mutations)
-			for j := 0; j < mutations; j++ {
+			for j := range mutations {
 				v := rand.NormFloat64()
 				vals[j] = v
 				allVars[i*mutations+j] = v
@@ -2099,8 +2111,8 @@ func TestConstNativeHistogram(t *testing.T) {
 				t.Fatal("unexpected error writing metric", err)
 			}
 			got := m2.Histogram
-			if !proto.Equal(s.want, got) {
-				t.Errorf("want histogram %q, got %q", s.want, got)
+			if diff := cmp.Diff(s.want, got, histogramCmpOpts...); diff != "" {
+				t.Errorf("unexpected histogram (-want +got):\n%s", diff)
 			}
 		})
 	}

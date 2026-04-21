@@ -31,8 +31,8 @@
 //		"log"
 //		"net/http"
 //
-//		"github.com/prometheus/client_golang/prometheus"
-//		"github.com/prometheus/client_golang/prometheus/promhttp"
+//		"github.com/aperturerobotics/go-prometheus-client-lite/prometheus"
+//		"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/promhttp"
 //	)
 //
 //	type metrics struct {

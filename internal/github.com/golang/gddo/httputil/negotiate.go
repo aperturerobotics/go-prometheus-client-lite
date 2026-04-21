@@ -9,7 +9,7 @@ package httputil
 import (
 	"net/http"
 
-	"github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil/header"
+	"github.com/aperturerobotics/go-prometheus-client-lite/internal/github.com/golang/gddo/httputil/header"
 )
 
 // NegotiateContentEncoding returns the best offered content encoding for the

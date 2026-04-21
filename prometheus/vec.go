@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/aperturerobotics/go-prometheus-client-lite/prometheus/internal"
 )
 
 // MetricVec is a Collector to bundle metrics of the same name that differ in
@@ -659,7 +659,7 @@ func inlineLabelValues(lvs []string, curry []curriedLabelValue) []string {
 }
 
 var labelsPool = &sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return make(Labels)
 	},
 }

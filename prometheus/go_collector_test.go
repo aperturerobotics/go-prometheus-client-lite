@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	dto "github.com/prometheus/client_model/go"
+	dto "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go"
 )
 
 func TestGoCollectorGoroutines(t *testing.T) {

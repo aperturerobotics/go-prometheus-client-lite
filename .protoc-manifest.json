@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "protocFlagsHash": "73ecb1eadcc09327f506b565a25d90e75eecb80259a252205a4f0e706692b6ef",
+  "toolVersions": "protoc=embedded,protobuf-go-lite=v0.12.2,starpc=v0.49.3,protobuf-es-lite=bun run gen",
+  "packages": {
+    "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go": {
+      "hash": "e560cf62194333bebedd564ec278d10224afedd629e2909f3a4f54c47ba66ed8",
+      "generatedFiles": [
+        "client_model/go/metrics.pb.cc",
+        "client_model/go/metrics.pb.go",
+        "client_model/go/metrics.pb.h",
+        "client_model/go/metrics.pb.rs",
+        "client_model/go/metrics.pb.ts"
+      ],
+      "protoFiles": [
+        "client_model/go/metrics.proto"
+      ]
+    }
+  }
+}

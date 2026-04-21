@@ -16,6 +16,11 @@ with a local `client_model/go` package generated with
 That keeps the retained DTO surface lightweight and avoids the
 `google.golang.org/protobuf` dependency tree.
 
+The code generation flow follows the same pattern used in
+`repos/bifrost`: `package.json` drives
+`github.com/aperturerobotics/common/cmd/aptre`, which runs the embedded WASM
+`protoc` pipeline from the shared `common` tooling.
+
 This module is available at
 `github.com/aperturerobotics/go-prometheus-client-lite`.
 
@@ -38,18 +43,17 @@ This module is available at
 ## Regenerating the DTOs
 
 The retained DTO package is generated from
-[`client_model/go/metrics.proto`](client_model/go/metrics.proto) with
-`protoc-gen-go-lite`.
+[`client_model/go/metrics.proto`](client_model/go/metrics.proto) with the
+shared `aptre` flow.
 
 ```bash
-make gengo
+bun install
+bun run gen
 ```
 
-This expects:
-
-- `protoc` on `PATH`
-- `protoc-gen-go-lite` at `~/company/bin/protoc-gen-go-lite`, or
-  `PROTOC_GEN_GO_LITE` set to another binary path
+This uses the shared WASM-based protoc pipeline from `common`, plus the
+lightweight protobuf plugins vendored through `.tools/`. There is no native
+`protoc` prerequisite for normal generation.
 
 ## Scope
 

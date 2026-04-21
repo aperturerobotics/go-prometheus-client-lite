@@ -1,3 +1,9 @@
+# JS / aptre tooling
+/node_modules
+/.tools
+/.log
+/.tmp
+
 # Examples
 examples/simple/simple
 examples/random/random

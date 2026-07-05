@@ -1,7 +1,6 @@
 # go-prometheus-client-lite
 
 [![Tests](https://github.com/aperturerobotics/go-prometheus-client-lite/actions/workflows/tests.yml/badge.svg)](https://github.com/aperturerobotics/go-prometheus-client-lite/actions/workflows/tests.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/aperturerobotics/go-prometheus-client-lite)](https://goreportcard.com/report/github.com/aperturerobotics/go-prometheus-client-lite)
 [![Go Reference](https://pkg.go.dev/badge/github.com/aperturerobotics/go-prometheus-client-lite.svg)](https://pkg.go.dev/github.com/aperturerobotics/go-prometheus-client-lite)
 
 `go-prometheus-client-lite` is a stripped-down fork of

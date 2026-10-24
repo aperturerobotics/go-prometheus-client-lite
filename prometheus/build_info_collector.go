@@ -15,10 +15,8 @@ package prometheus
 
 import "runtime/debug"
 
-// NewBuildInfoCollector is the obsolete version of collectors.NewBuildInfoCollector.
-// See there for documentation.
-//
-// Deprecated: Use collectors.NewBuildInfoCollector instead.
+// NewBuildInfoCollector returns a collector of the go_build_info gauge, which
+// is always 1 and labels the main module's path, version and checksum.
 func NewBuildInfoCollector() Collector {
 	path, version, sum := "unknown", "unknown", "unknown"
 	if bi, ok := debug.ReadBuildInfo(); ok {

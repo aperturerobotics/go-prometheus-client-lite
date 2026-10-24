@@ -159,10 +159,9 @@ func defaultGoCollectorOptions() internal.GoCollectorOptions {
 	}
 }
 
-// NewGoCollector is the obsolete version of collectors.NewGoCollector.
-// See there for documentation.
-//
-// Deprecated: Use collectors.NewGoCollector instead.
+// NewGoCollector returns a collector of the Go runtime: goroutines, threads,
+// memory statistics and GC pauses, plus the recommended runtime/metrics.
+// This fork has no collectors package, so this is the constructor to use.
 func NewGoCollector(opts ...func(o *internal.GoCollectorOptions)) Collector {
 	opt := defaultGoCollectorOptions()
 	for _, o := range opts {

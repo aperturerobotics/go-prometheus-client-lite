@@ -7,8 +7,8 @@
   "scripts": {
     "deps": "depcheck --ignore-patterns=package.json --ignores depcheck,prettier,rimraf,typescript,@go/github.com,@aptre/protobuf-es-lite",
     "codegen": "bun run gen",
-    "gen": "bun run go:aptre -- generate --targets ./client_model/go/*.proto --features equal",
-    "gen:force": "bun run go:aptre -- generate --force --targets ./client_model/go/*.proto --features equal",
+    "gen": "bun run go:aptre -- generate --targets ./client_model/go/*.proto",
+    "gen:force": "bun run go:aptre -- generate --force --targets ./client_model/go/*.proto",
     "format": "bun run format:go && bun run format:config",
     "format:go": "bun run go:aptre -- format",
     "format:config": "prettier --write package.json",

@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "protocFlagsHash": "73ecb1eadcc09327f506b565a25d90e75eecb80259a252205a4f0e706692b6ef",
-  "toolVersions": "protoc=embedded,protobuf-go-lite=v0.12.2,starpc=v0.49.3,protobuf-es-lite=bun run gen",
+  "protocFlagsHash": "5285baf7a8ce06df55af925bd94d7cea3cd2da647169575f021b9f0f57e80bce",
+  "toolVersions": "protoc=embedded,protobuf-go-lite=v0.19.1-0.20261018054529-f60c4d2691ea,starpc=v0.52.3,protobuf-es-lite=bun run gen",
   "packages": {
     "github.com/aperturerobotics/go-prometheus-client-lite/client_model/go": {
       "hash": "e560cf62194333bebedd564ec278d10224afedd629e2909f3a4f54c47ba66ed8",

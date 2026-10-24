@@ -15,12 +15,11 @@
 // @generated from file github.com/aperturerobotics/go-prometheus-client-lite/client_model/go/metrics.proto (package io.prometheus.client, syntax proto2)
 /* eslint-disable */
 
-import type { MessageType, PartialFieldInfo } from '@aptre/protobuf-es-lite'
-import {
-  createEnumType,
-  createMessageType,
-  ScalarType,
-} from '@aptre/protobuf-es-lite'
+import { createEnumType } from '@aptre/protobuf-es-lite/enum'
+import type { MessageType } from '@aptre/protobuf-es-lite/message'
+import { createMessageType } from '@aptre/protobuf-es-lite/message'
+import { ScalarType } from '@aptre/protobuf-es-lite/scalar'
+import type { PartialFieldInfo } from '@aptre/protobuf-es-lite/field'
 import { Timestamp } from '@aptre/protobuf-es-lite/google/protobuf/timestamp'
 
 export const protobufPackage = 'io.prometheus.client'
@@ -72,16 +71,15 @@ export enum MetricType {
   GAUGE_HISTOGRAM = 5,
 }
 
-// MetricType_Enum is the enum type for MetricType.
-export const MetricType_Enum = createEnumType(
+export const MetricType_Enum = /* @__PURE__ */ createEnumType(
   'io.prometheus.client.MetricType',
   [
-    { no: 0, name: 'COUNTER' },
-    { no: 1, name: 'GAUGE' },
-    { no: 2, name: 'SUMMARY' },
-    { no: 3, name: 'UNTYPED' },
-    { no: 4, name: 'HISTOGRAM' },
-    { no: 5, name: 'GAUGE_HISTOGRAM' },
+    [0, 'COUNTER'],
+    [1, 'GAUGE'],
+    [2, 'SUMMARY'],
+    [3, 'UNTYPED'],
+    [4, 'HISTOGRAM'],
+    [5, 'GAUGE_HISTOGRAM'],
   ],
 )
 
@@ -99,15 +97,15 @@ export interface LabelPair {
   value?: string
 }
 
-// LabelPair contains the message type declaration for LabelPair.
-export const LabelPair: MessageType<LabelPair> = createMessageType({
-  typeName: 'io.prometheus.client.LabelPair',
-  fields: [
-    { no: 1, name: 'name', kind: 'scalar', T: ScalarType.STRING, opt: true },
-    { no: 2, name: 'value', kind: 'scalar', T: ScalarType.STRING, opt: true },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const LabelPair: MessageType<LabelPair> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.LabelPair',
+    fields: [
+      { no: 1, name: 'name', kind: 'scalar', T: ScalarType.STRING, opt: true },
+      { no: 2, name: 'value', kind: 'scalar', T: ScalarType.STRING, opt: true },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
 
 /**
  * @generated from message io.prometheus.client.Gauge
@@ -119,12 +117,11 @@ export interface Gauge {
   value?: number
 }
 
-// Gauge contains the message type declaration for Gauge.
-export const Gauge: MessageType<Gauge> = createMessageType({
+export const Gauge: MessageType<Gauge> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Gauge',
   fields: [
     { no: 1, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -146,28 +143,28 @@ export interface Exemplar {
   timestamp?: Date
 }
 
-// Exemplar contains the message type declaration for Exemplar.
-export const Exemplar: MessageType<Exemplar> = createMessageType({
-  typeName: 'io.prometheus.client.Exemplar',
-  fields: [
-    {
-      no: 1,
-      name: 'label',
-      kind: 'message',
-      T: () => LabelPair,
-      repeated: true,
-    },
-    { no: 2, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
-    {
-      no: 3,
-      name: 'timestamp',
-      kind: 'message',
-      T: () => Timestamp,
-      opt: true,
-    },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const Exemplar: MessageType<Exemplar> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.Exemplar',
+    fields: [
+      {
+        no: 1,
+        name: 'label',
+        kind: 'message',
+        T: () => LabelPair,
+        repeated: true,
+      },
+      { no: 2, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
+      {
+        no: 3,
+        name: 'timestamp',
+        kind: 'message',
+        T: () => Timestamp,
+        opt: true,
+      },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
 
 /**
  * @generated from message io.prometheus.client.Counter
@@ -187,8 +184,7 @@ export interface Counter {
   createdTimestamp?: Date
 }
 
-// Counter contains the message type declaration for Counter.
-export const Counter: MessageType<Counter> = createMessageType({
+export const Counter: MessageType<Counter> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Counter',
   fields: [
     { no: 1, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
@@ -200,7 +196,7 @@ export const Counter: MessageType<Counter> = createMessageType({
       T: () => Timestamp,
       opt: true,
     },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -218,21 +214,21 @@ export interface Quantile {
   value?: number
 }
 
-// Quantile contains the message type declaration for Quantile.
-export const Quantile: MessageType<Quantile> = createMessageType({
-  typeName: 'io.prometheus.client.Quantile',
-  fields: [
-    {
-      no: 1,
-      name: 'quantile',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      opt: true,
-    },
-    { no: 2, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const Quantile: MessageType<Quantile> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.Quantile',
+    fields: [
+      {
+        no: 1,
+        name: 'quantile',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        opt: true,
+      },
+      { no: 2, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
 
 /**
  * @generated from message io.prometheus.client.Summary
@@ -256,8 +252,7 @@ export interface Summary {
   createdTimestamp?: Date
 }
 
-// Summary contains the message type declaration for Summary.
-export const Summary: MessageType<Summary> = createMessageType({
+export const Summary: MessageType<Summary> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Summary',
   fields: [
     {
@@ -288,7 +283,7 @@ export const Summary: MessageType<Summary> = createMessageType({
       T: () => Timestamp,
       opt: true,
     },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -302,12 +297,11 @@ export interface Untyped {
   value?: number
 }
 
-// Untyped contains the message type declaration for Untyped.
-export const Untyped: MessageType<Untyped> = createMessageType({
+export const Untyped: MessageType<Untyped> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Untyped',
   fields: [
     { no: 1, name: 'value', kind: 'scalar', T: ScalarType.DOUBLE, opt: true },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -333,8 +327,7 @@ export interface Bucket {
   exemplar?: Exemplar
 }
 
-// Bucket contains the message type declaration for Bucket.
-export const Bucket: MessageType<Bucket> = createMessageType({
+export const Bucket: MessageType<Bucket> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Bucket',
   fields: [
     {
@@ -359,7 +352,7 @@ export const Bucket: MessageType<Bucket> = createMessageType({
       opt: true,
     },
     { no: 3, name: 'exemplar', kind: 'message', T: () => Exemplar, opt: true },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -377,15 +370,27 @@ export interface BucketSpan {
   length?: number
 }
 
-// BucketSpan contains the message type declaration for BucketSpan.
-export const BucketSpan: MessageType<BucketSpan> = createMessageType({
-  typeName: 'io.prometheus.client.BucketSpan',
-  fields: [
-    { no: 1, name: 'offset', kind: 'scalar', T: ScalarType.SINT32, opt: true },
-    { no: 2, name: 'length', kind: 'scalar', T: ScalarType.UINT32, opt: true },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const BucketSpan: MessageType<BucketSpan> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.BucketSpan',
+    fields: [
+      {
+        no: 1,
+        name: 'offset',
+        kind: 'scalar',
+        T: ScalarType.SINT32,
+        opt: true,
+      },
+      {
+        no: 2,
+        name: 'length',
+        kind: 'scalar',
+        T: ScalarType.UINT32,
+        opt: true,
+      },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
 
 /**
  * @generated from message io.prometheus.client.Histogram
@@ -457,113 +462,125 @@ export interface Histogram {
   exemplars?: Exemplar[]
 }
 
-// Histogram contains the message type declaration for Histogram.
-export const Histogram: MessageType<Histogram> = createMessageType({
-  typeName: 'io.prometheus.client.Histogram',
-  fields: [
-    {
-      no: 1,
-      name: 'sample_count',
-      kind: 'scalar',
-      T: ScalarType.UINT64,
-      opt: true,
-    },
-    {
-      no: 4,
-      name: 'sample_count_float',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      opt: true,
-    },
-    {
-      no: 2,
-      name: 'sample_sum',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      opt: true,
-    },
-    { no: 3, name: 'bucket', kind: 'message', T: () => Bucket, repeated: true },
-    {
-      no: 15,
-      name: 'created_timestamp',
-      kind: 'message',
-      T: () => Timestamp,
-      opt: true,
-    },
-    { no: 5, name: 'schema', kind: 'scalar', T: ScalarType.SINT32, opt: true },
-    {
-      no: 6,
-      name: 'zero_threshold',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      opt: true,
-    },
-    {
-      no: 7,
-      name: 'zero_count',
-      kind: 'scalar',
-      T: ScalarType.UINT64,
-      opt: true,
-    },
-    {
-      no: 8,
-      name: 'zero_count_float',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      opt: true,
-    },
-    {
-      no: 9,
-      name: 'negative_span',
-      kind: 'message',
-      T: () => BucketSpan,
-      repeated: true,
-    },
-    {
-      no: 10,
-      name: 'negative_delta',
-      kind: 'scalar',
-      T: ScalarType.SINT64,
-      repeated: true,
-    },
-    {
-      no: 11,
-      name: 'negative_count',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      repeated: true,
-    },
-    {
-      no: 12,
-      name: 'positive_span',
-      kind: 'message',
-      T: () => BucketSpan,
-      repeated: true,
-    },
-    {
-      no: 13,
-      name: 'positive_delta',
-      kind: 'scalar',
-      T: ScalarType.SINT64,
-      repeated: true,
-    },
-    {
-      no: 14,
-      name: 'positive_count',
-      kind: 'scalar',
-      T: ScalarType.DOUBLE,
-      repeated: true,
-    },
-    {
-      no: 16,
-      name: 'exemplars',
-      kind: 'message',
-      T: () => Exemplar,
-      repeated: true,
-    },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const Histogram: MessageType<Histogram> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.Histogram',
+    fields: [
+      {
+        no: 1,
+        name: 'sample_count',
+        kind: 'scalar',
+        T: ScalarType.UINT64,
+        opt: true,
+      },
+      {
+        no: 4,
+        name: 'sample_count_float',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        opt: true,
+      },
+      {
+        no: 2,
+        name: 'sample_sum',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        opt: true,
+      },
+      {
+        no: 3,
+        name: 'bucket',
+        kind: 'message',
+        T: () => Bucket,
+        repeated: true,
+      },
+      {
+        no: 15,
+        name: 'created_timestamp',
+        kind: 'message',
+        T: () => Timestamp,
+        opt: true,
+      },
+      {
+        no: 5,
+        name: 'schema',
+        kind: 'scalar',
+        T: ScalarType.SINT32,
+        opt: true,
+      },
+      {
+        no: 6,
+        name: 'zero_threshold',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        opt: true,
+      },
+      {
+        no: 7,
+        name: 'zero_count',
+        kind: 'scalar',
+        T: ScalarType.UINT64,
+        opt: true,
+      },
+      {
+        no: 8,
+        name: 'zero_count_float',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        opt: true,
+      },
+      {
+        no: 9,
+        name: 'negative_span',
+        kind: 'message',
+        T: () => BucketSpan,
+        repeated: true,
+      },
+      {
+        no: 10,
+        name: 'negative_delta',
+        kind: 'scalar',
+        T: ScalarType.SINT64,
+        repeated: true,
+      },
+      {
+        no: 11,
+        name: 'negative_count',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        repeated: true,
+      },
+      {
+        no: 12,
+        name: 'positive_span',
+        kind: 'message',
+        T: () => BucketSpan,
+        repeated: true,
+      },
+      {
+        no: 13,
+        name: 'positive_delta',
+        kind: 'scalar',
+        T: ScalarType.SINT64,
+        repeated: true,
+      },
+      {
+        no: 14,
+        name: 'positive_count',
+        kind: 'scalar',
+        T: ScalarType.DOUBLE,
+        repeated: true,
+      },
+      {
+        no: 16,
+        name: 'exemplars',
+        kind: 'message',
+        T: () => Exemplar,
+        repeated: true,
+      },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
 
 /**
  * @generated from message io.prometheus.client.Metric
@@ -599,8 +616,7 @@ export interface Metric {
   timestampMs?: bigint
 }
 
-// Metric contains the message type declaration for Metric.
-export const Metric: MessageType<Metric> = createMessageType({
+export const Metric: MessageType<Metric> = /* @__PURE__ */ createMessageType({
   typeName: 'io.prometheus.client.Metric',
   fields: [
     {
@@ -628,7 +644,7 @@ export const Metric: MessageType<Metric> = createMessageType({
       T: ScalarType.INT64,
       opt: true,
     },
-  ] as readonly PartialFieldInfo[],
+  ] satisfies readonly PartialFieldInfo[],
   packedByDefault: false,
 })
 
@@ -658,15 +674,21 @@ export interface MetricFamily {
   unit?: string
 }
 
-// MetricFamily contains the message type declaration for MetricFamily.
-export const MetricFamily: MessageType<MetricFamily> = createMessageType({
-  typeName: 'io.prometheus.client.MetricFamily',
-  fields: [
-    { no: 1, name: 'name', kind: 'scalar', T: ScalarType.STRING, opt: true },
-    { no: 2, name: 'help', kind: 'scalar', T: ScalarType.STRING, opt: true },
-    { no: 3, name: 'type', kind: 'enum', T: MetricType_Enum, opt: true },
-    { no: 4, name: 'metric', kind: 'message', T: () => Metric, repeated: true },
-    { no: 5, name: 'unit', kind: 'scalar', T: ScalarType.STRING, opt: true },
-  ] as readonly PartialFieldInfo[],
-  packedByDefault: false,
-})
+export const MetricFamily: MessageType<MetricFamily> =
+  /* @__PURE__ */ createMessageType({
+    typeName: 'io.prometheus.client.MetricFamily',
+    fields: [
+      { no: 1, name: 'name', kind: 'scalar', T: ScalarType.STRING, opt: true },
+      { no: 2, name: 'help', kind: 'scalar', T: ScalarType.STRING, opt: true },
+      { no: 3, name: 'type', kind: 'enum', T: MetricType_Enum, opt: true },
+      {
+        no: 4,
+        name: 'metric',
+        kind: 'message',
+        T: () => Metric,
+        repeated: true,
+      },
+      { no: 5, name: 'unit', kind: 'scalar', T: ScalarType.STRING, opt: true },
+    ] satisfies readonly PartialFieldInfo[],
+    packedByDefault: false,
+  })
